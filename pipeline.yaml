@@ -1,0 +1,32 @@
+# Pipeline configuration. Every run records a hash of this file in the
+# `pipeline_runs` table, so any output can be traced back to its parameters.
+
+source:
+  # Our World in Data - CO2 and Greenhouse Gas Emissions dataset (CC BY 4.0)
+  url: https://raw.githubusercontent.com/owid/co2-data/master/owid-co2-data.csv
+  cache_dir: data/raw
+  # Re-download the raw file only if the cached copy is older than this.
+  max_age_days: 7
+
+filters:
+  start_year: 1990
+  end_year: null # null = latest year available
+
+# Reference year used to measure progress. Canada's 2030 Paris target is set
+# against 2005 levels, so 2005 is the default.
+baseline_year: 2005
+
+# ISO 3166-1 alpha-3 codes highlighted in reports and charts.
+focus_countries: [CAN, BRA, USA, MEX, GBR, DEU, CHN, IND]
+
+quality:
+  # Maximum share of missing values allowed per (clean) column before the run fails.
+  max_null_share:
+    co2_mt: 0.10
+    population: 0.02
+  # Tolerance (relative) when reconciling our per-capita figure with the source.
+  per_capita_tolerance: 0.02
+
+output:
+  database: output/emissions.db
+  reports_dir: output/reports
